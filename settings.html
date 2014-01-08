@@ -3,10 +3,23 @@
   <head>
     <meta content="text/html; charset=windows-1252" http-equiv="content-type">
     <title></title>
+      <script type="text/javascript">
+        $( "#power_button" ).click(function() {
+           var msg = {
+             type: "click",
+             text: "power_button"
+           };
+           $.ts.webSocket.sendToMH(msg);
+           console.log("I just told mh to reload");
+        });
+      </script>
   </head>
   <body>
     <p>
-      Settings option not yet configured.
+      Settings option not yet configured.<br/><br/>
+      Click the power icon to reload mh<br/>
+      <img id="power_button" alt="test reload mh code" src="images/icons/power_32.png"
+              valign="middle" height="50" width="50">
     </p>
   </body>
 </html>

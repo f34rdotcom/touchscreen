@@ -11,6 +11,10 @@ window.setInterval(function() { GetMhMode('header'); }, 60000);
 // and get the current system mode icon and display it in the header
 //******************************************************************************
 $(function() {
+  //App globals and settings
+  $.ts = { };
+  //Initialize webSocket object
+  initWebSocket();
   //Load the initial page
   LoadPage(curr_page);
   //Get the current mh mode and display it
@@ -124,3 +128,61 @@ function formatAMPM() {
   
   return days[d.getDay()]+' '+months[d.getMonth()]+' '+d.getDate()+' '+d.getFullYear()+' '+hours+':'+minutes+ampm;
 }
+
+
+//******************************************************************************
+// webSocket object
+//
+// define some constants for later use
+// initialize webSocket object and methods
+// create a websocket connection and define its event functions
+//
+// Sean Mathews 
+//   coder at f34r dot com
+//
+//******************************************************************************
+function initWebSocket()
+{
+  // create our connection url and add to our touchscreen(ts) object
+  $.ts.wsUri = "ws://" + window.location.hostname + ":3000/"; 
+
+  // start the connection. async so it wont happen just yet
+  $.ts.webSocket = new WebSocket($.ts.wsUri);
+
+  // connect establish event
+  $.ts.webSocket.onopen = function(evt) {
+    console.log("WebSocket connected");
+  };
+
+  // connection close event
+  $.ts.webSocket.onclose = function(evt) {
+    console.log("WebSocket closed");
+  };
+
+  // connection message event
+  $.ts.webSocket.onmessage = function(evt) {
+    console.log("WebSocket message: " + evt.data);
+    if(evt.data === "RESTART") {
+       alert("mh just told me it restarted. Is all ok?");
+    }
+  };
+
+  // connection error event
+  $.ts.webSocket.onerror = function(evt) {
+    console.log("WebSocket connected");
+  };
+
+  // sendToMH send a json message to MH
+  // 
+  //   var msg = {
+  //     event: "click",
+  //     data: "power"
+  //   };
+  //   $.ts.webSocket.sendToMH(msg);
+  // 
+  $.ts.webSocket.sendToMH = function (msg) {
+    console.log("WebSocket sendToMH");
+    $.ts.webSocket.send(JSON.stringify(msg));
+  };
+}
+
