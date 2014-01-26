@@ -282,7 +282,10 @@ function initWebSocket()
   $.ts.wsUri = "ws://" + window.location.hostname + ":3000/"; 
 
   // start the connection. async so it wont happen just yet
-  $.ts.webSocket = new WebSocket($.ts.wsUri);
+  ReconnectingWebSocket.debugAll = true;
+  $.ts.webSocket = new ReconnectingWebSocket($.ts.wsUri);
+  $.ts.webSocket.reconnectInterval = 25000;
+  $.ts.webSocket.timeoutInterval = 25000;
 
   // connect establish event
   $.ts.webSocket.onopen = function(evt) {
@@ -304,7 +307,7 @@ function initWebSocket()
 
   // connection error event
   $.ts.webSocket.onerror = function(evt) {
-    console.log("WebSocket connected");
+    console.log("WebSocket connection error");
   };
 
   // sendToMH send a json message to MH
